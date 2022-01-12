@@ -52,7 +52,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define MODEM_BASEBAND_PROPERTY_SIZE  10
 #endif
 
-#define LOG_TAG "libwcnss_qmi_YTX703"
+#define LOG_TAG "libwcnss_qmi_X01AD"
 #include <log/log.h>
 #include <cutils/properties.h>
 #include <sys/types.h>
@@ -138,7 +138,7 @@ int wcnss_init_qmi()
 		}
 		dms_init_done = SUCCESS;
 	} else if (strcmp(ro_baseband, QMI_UIM_PROP_BASEBAND_VALUE_APQ) == 0) {
-		ALOGE("%s: Running on the YTX703F", __func__);
+		ALOGE("%s: Running on the X01AD", __func__);
 		/* YTX703F */
 	} else {
 		ALOGE("%s: Running on unknown hardware (ro.baseband=%s).",
@@ -198,52 +198,6 @@ static int retrieve_wlan_mac_from_qmi(unsigned char *mac_addr)
 	return SUCCESS;
 }
 
-static int retrieve_wlan_mac_from_userstore(unsigned char *mac_addr)
-{
-	#define WLAN_MAC_ADDR_SIZE 6
-	const char *filename = "/userstore/wifimac";
-	FILE *fd;
-	char raw_buf[BUFSIZ];
-	int  mac_tmp_buf[WLAN_MAC_ADDR_SIZE];
-	int  rc = FAILED;
-	int  i;
-
-	fd = fopen(filename, "rb");
-	if (!fd) {
-		ALOGE("open '%s' failure %s.\n", filename, strerror(errno));
-		goto out_noop;
-	}
-
-	rc = fread(raw_buf, 1, BUFSIZ, fd);
-	if (rc <= 0) {
-		ALOGE("%s: fread returned %d\n", __func__, rc);
-		rc = FAILED;
-		goto out_close_fd;
-	}
-
-	rc = sscanf(raw_buf, "%02x:%02x:%02x:%02x:%02x:%02x",
-	           &mac_tmp_buf[0], &mac_tmp_buf[1], &mac_tmp_buf[2],
-	           &mac_tmp_buf[3], &mac_tmp_buf[4], &mac_tmp_buf[5]);
-	if (rc != WLAN_MAC_ADDR_SIZE) {
-		ALOGE("%s: Failed to Copy WLAN MAC\n", __func__);
-		rc = FAILED;
-		goto out_close_fd;
-	}
-	for (i = 0; i < WLAN_MAC_ADDR_SIZE; i++) {
-		mac_addr[i] = (unsigned char) mac_tmp_buf[i];
-	}
-	ALOGE("%s: Read WLAN MAC Address from userstore: "
-	      "%02x:%02x:%02x:%02x:%02x:%02x", __func__,
-	      mac_addr[0], mac_addr[1], mac_addr[2],
-	      mac_addr[3], mac_addr[4], mac_addr[5]);
-
-	rc = SUCCESS;
-out_close_fd:
-	fclose(fd);
-out_noop:
-	return rc;
-}
-
 int wcnss_qmi_get_wlan_address(unsigned char *mac_addr)
 {
 	int rc = FAILED;
@@ -257,12 +211,9 @@ int wcnss_qmi_get_wlan_address(unsigned char *mac_addr)
 		 * from the QMI services
 		 */
 		rc = retrieve_wlan_mac_from_qmi(mac_addr);
-	}
-	if (rc == FAILED) {
-		/* YTX703F, or YTX703L with a faulty connection to the
-		 * QMI services.
-		 */
-		rc = retrieve_wlan_mac_from_userstore(mac_addr);
+	} else {
+		ALOGE("%s: Failed to Read WLAN MAC Address", __func__);
+		return FAILED;
 	}
 	return rc;
 }

@@ -38,4 +38,3 @@ struct dms_get_mac_address_resp_msg_v01 {
 	uint8_t  mac_address[6];
 	uint8_t  pad2[2];
 };
-
