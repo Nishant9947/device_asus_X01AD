@@ -88,7 +88,7 @@ int wcnss_init_qmi()
 {
 	void *dms_service;
 	const char *qmi_modem_port;
-	const char *tries[] = { QMI_PORT_RMNET_0, QMI_PORT_RMNET_1 };
+	const char *tries[] = { QMI_PORT_RMNET_0, QMI_PORT_RMNET_1, QMI_PORT_RMNET_2, QMI_PORT_RMNET_3, QMI_PORT_RMNET_4, QMI_PORT_RMNET_5, QMI_PORT_RMNET_6, QMI_PORT_RMNET_7, QMI_PORT_RMNET_8, QMI_PORT_RMNET_9, QMI_PORT_RMNET_10, QMI_PORT_RMNET_11, QMI_PORT_RMNET_12, QMI_PORT_RMNET_13, QMI_PORT_RMNET_14, QMI_PORT_RMNET_15, QMI_PORT_RMNET_16 };
 	int rc = SUCCESS;
 	size_t i;
 
@@ -125,8 +125,8 @@ int wcnss_init_qmi()
 		for (i = 0; i < ARRAY_SIZE(tries); i++) {
 			qmi_modem_port = tries[i];
 
-			rc = qmi_client_init(qmi_modem_port, dms_service,
-			                     NULL, dms_service, &dms_qmi_client);
+			rc = qmi_client_init_instance(dms_service, 0xFFFFLL
+			                     NULL, 5000, &dms_qmi_client);
 			if (rc == 0) {
 				break;
 			}
