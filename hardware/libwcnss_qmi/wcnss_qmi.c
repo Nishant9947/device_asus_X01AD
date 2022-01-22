@@ -125,7 +125,7 @@ int wcnss_init_qmi()
 		for (i = 0; i < ARRAY_SIZE(tries); i++) {
 			qmi_modem_port = tries[i];
 
-			rc = qmi_client_init_instance(dms_service, 0xFFFFLL
+			rc = qmi_client_init_instance(dms_service, 0xFFFFLL,
 			                     NULL, 5000, &dms_qmi_client);
 			if (rc == 0) {
 				break;

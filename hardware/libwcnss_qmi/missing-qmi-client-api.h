@@ -39,7 +39,7 @@
 void *dms_get_service_object_internal_v01(int32_t, int32_t, int32_t);
 int   qmi_client_send_msg_sync(void*, unsigned int, void*, unsigned int,
                                void*, unsigned int, unsigned int);
-int   qmi_client_init_instance(const char*, void*, void*, void*, void**);
+int   qmi_client_init_instance(const char*, unsigned int, void*, unsigned int, void**);
 int   qmi_client_release(void*);
 int   qmi_init(void*, void*);
 int   qmi_release(int);

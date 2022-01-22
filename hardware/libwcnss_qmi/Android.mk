@@ -22,7 +22,7 @@ LOCAL_SRC_FILES := wcnss_qmi.c
 LOCAL_CFLAGS += -Wall -Wextra -Werror
 LOCAL_SHARED_LIBRARIES := libc libcutils libutils liblog
 # qmi_client_init, qmi_client_send_msg_sync, qmi_client_release
-LOCAL_SHARED_LIBRARIES += libqcci_legacy
+LOCAL_SHARED_LIBRARIES += libqcci_legacy libqmi_cci
 # dms_get_service_object_internal_v01
 LOCAL_SHARED_LIBRARIES += libqmiservices
 # qmi_init, qmi_release
